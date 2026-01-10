@@ -76,11 +76,3 @@ def register_deterministic_scenarios(env: Any) -> None:
         except Exception as exc:
             logger.error("Verification failed for %s: %s", task_id, exc)
             yield 0.0
-    
-    # Also register individual task IDs for backward compatibility
-    for task_id in _TASKS_BY_ID.keys():
-        @env.scenario(task_id)
-        async def _compat_scenario(task_id=task_id):
-            """Backward compatibility wrapper."""
-            async for result in deterministic_scenario(task_id):
-                yield result

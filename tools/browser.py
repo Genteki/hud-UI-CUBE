@@ -15,9 +15,6 @@ logger = logging.getLogger(__name__)
 
 router = MCPRouter()
 
-# Global executor that will be set during initialization
-_global_executor: "BrowserExecutor | None" = None
-
 
 # =============================================================================
 # PlaywrightToolWithMemory
@@ -328,40 +325,6 @@ class BrowserExecutor(BaseExecutor):
             return result
         except Exception as e:
             return ContentResult(error=str(e))
-
-
-# Import computer tool classes
-from hud.tools.computer import (
-    AnthropicComputerTool,
-    OpenAIComputerTool,
-    HudComputerTool,
-    GeminiComputerTool,
-    QwenComputerTool,
-)
-
-# Create tool instances at module level with None executor
-# The executor will be set during initialization
-hud_computer_tool = HudComputerTool(executor=None)
-anthropic_computer_tool = AnthropicComputerTool(executor=None)
-openai_computer_tool = OpenAIComputerTool(executor=None)
-gemini_computer_tool = GeminiComputerTool(executor=None)
-qwen_computer_tool = QwenComputerTool(executor=None)
-
-# Register tools on the router
-router.add_tool(hud_computer_tool)
-router.add_tool(anthropic_computer_tool)
-router.add_tool(openai_computer_tool)
-router.add_tool(gemini_computer_tool)
-router.add_tool(qwen_computer_tool)
-
-
-def set_global_executor(executor: "BrowserExecutor") -> None:
-    """Set the executor for all computer tools."""
-    hud_computer_tool.executor = executor
-    anthropic_computer_tool.executor = executor
-    openai_computer_tool.executor = executor
-    gemini_computer_tool.executor = executor
-    qwen_computer_tool.executor = executor
 
 
 __all__ = ["router", "PlaywrightToolWithMemory", "BrowserExecutor"]

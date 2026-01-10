@@ -1,12 +1,31 @@
-"""Computer tools registration - kept for compatibility."""
+"""Computer tools registration."""
 from typing import Any
-from tools.browser import set_global_executor
 
-# Keep this function for compatibility with hud-remote-browser pattern
+from hud.tools.computer import (
+    AnthropicComputerTool,
+    OpenAIComputerTool,
+    HudComputerTool,
+    GeminiComputerTool,
+    QwenComputerTool,
+)
+from tools.browser import router
+
+# Create tool instances at module level with None executor
+# The executor will be set during initialization
+_tools = [
+    HudComputerTool(executor=None),
+    AnthropicComputerTool(executor=None),
+    OpenAIComputerTool(executor=None),
+    GeminiComputerTool(executor=None),
+    QwenComputerTool(executor=None),
+]
+
+# Register tools on the browser router at module level
+for tool in _tools:
+    router.add_tool(tool)
+
+
 def register_computer_tools(env: Any, browser_executor: Any) -> None:
-    """Register computer tools with the environment.
-    
-    Note: Tools are already registered on the router at module level.
-    This function just sets the executor.
-    """
-    set_global_executor(browser_executor)
+    """Set the executor for all computer tools."""
+    for tool in _tools:
+        tool.executor = browser_executor

@@ -12,9 +12,12 @@ env = Environment("ui-cube")
 env.connect_url(DEV_URL)
 
 
-async def test_sample(task_id: str = "ui-cube:combo-box-tasks--1"):
+async def test_sample(task_id: str = "combo-box-tasks--1"):
+    """Test a specific deterministic task."""
     print(f"\n=== Test: {task_id} ===")
-    task = env(task_id)
+    
+    task = env("deterministic", task_id=task_id)
+
     async with hud.eval(task) as ctx:
         agent = OpenAIChatAgent.create(model="gpt-5")
         await agent.run(ctx, max_steps=30)

@@ -8,6 +8,7 @@ from typing import Any, TypedDict
 
 from hud import Environment
 from hud.server.context import attach_context
+from hud.tools.types import ContentResult
 
 logging.basicConfig(
     stream=sys.stderr,
@@ -154,6 +155,30 @@ async def initialize_environment(ctx: Any) -> None:
         import traceback
         logger.error("Traceback: %s", traceback.format_exc())
         raise
+
+
+@env.tool("navigate")
+async def tool_navigate(url: str) -> ContentResult:
+    """Navigate the browser to a URL."""
+    global persistent_ctx
+    tool = persistent_ctx.playwright_tool if persistent_ctx else None
+    if not tool:
+        return ContentResult(error="No browser available")
+    try:
+        await tool.navigate(url)
+        return ContentResult(output=f"Navigated to {url}")
+    except Exception as e:
+        return ContentResult(error=str(e))
+
+
+@env.tool("wait")
+async def tool_wait(seconds: float) -> ContentResult:
+    """Wait for a number of seconds."""
+    try:
+        await asyncio.sleep(seconds)
+        return ContentResult(output=f"Waited {seconds} seconds")
+    except Exception as e:
+        return ContentResult(error=str(e))
 
 
 PROVIDER_API_KEYS = {

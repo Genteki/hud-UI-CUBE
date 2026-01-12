@@ -163,12 +163,17 @@ async def tool_navigate(url: str) -> ContentResult:
     global persistent_ctx
     tool = persistent_ctx.playwright_tool if persistent_ctx else None
     if not tool:
-        return ContentResult(error="No browser available")
+        return ContentResult(error="No browser available").to_content_blocks()
     try:
-        await tool.navigate(url)
-        return ContentResult(output=f"Navigated to {url}")
-    except Exception as e:
-        return ContentResult(error=str(e))
+        # Use a lighter wait_for_load_state to avoid long networkidle waits on slow pages
+        result = await tool.navigate(url=url, wait_for_load_state="domcontentloaded")
+        success = bool(result.get("success"))
+        error = result.get("error") or (None if success else "Navigation failed")
+        return ContentResult(
+            output=f"Navigated to {url}" if success else None, error=error
+        ).to_content_blocks()
+    except BaseException as e:
+        return ContentResult(error=str(e)).to_content_blocks()
 
 
 @env.tool("wait")
@@ -176,9 +181,9 @@ async def tool_wait(seconds: float) -> ContentResult:
     """Wait for a number of seconds."""
     try:
         await asyncio.sleep(seconds)
-        return ContentResult(output=f"Waited {seconds} seconds")
-    except Exception as e:
-        return ContentResult(error=str(e))
+        return ContentResult(output=f"Waited {seconds} seconds").to_content_blocks()
+    except BaseException as e:
+        return ContentResult(error=str(e)).to_content_blocks()
 
 
 PROVIDER_API_KEYS = {

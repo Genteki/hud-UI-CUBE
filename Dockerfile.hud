@@ -31,7 +31,6 @@ ENV PYTHONUNBUFFERED=1 \
 # Note: Set at runtime:
 # - BROWSER_PROVIDER: anchorbrowser, steel, browserbase, hyperbrowser
 # - Provider API keys: ANCHOR_API_KEY, STEEL_API_KEY, etc.
-ENV ANCHOR_API_KEY=sk-0ec40f6420b38724833606729d964708
 
 # Run: context server in background, then environment
 CMD ["sh", "-c", "\

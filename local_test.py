@@ -20,9 +20,9 @@ async def test_sample(task_id: str = "combo-box-tasks--1"):
     task = env("deterministic", task_id=task_id)
 
     async with hud.eval(task) as ctx:
-        # agent = OpenAIChatAgent.create(model="gpt-5", system_prompt=SYSTEM_PROMPT)
+        agent = OpenAIChatAgent.create(model="gpt-5", system_prompt=SYSTEM_PROMPT)
         # agent = create_agent(model="claude-sonnet-4-5", system_prompt=SYSTEM_PROMPT)
-        agent = create_agent(model="gemini-2.5-pro", system_prompt=SYSTEM_PROMPT)
+        # agent = create_agent(model="gemini-2.5-pro", system_prompt=SYSTEM_PROMPT)
         
         await agent.run(ctx, max_steps=20)
         print(f"Reward: {ctx.reward}")
@@ -36,7 +36,7 @@ async def main():
     print("Make sure the environment server is running (hud dev --port 8765)")
 
     # await test_sample()
-    await test_sample("copy-paste-tasks--1")
+    await test_sample("navigation-search-interaction--16")
 
 
 if __name__ == "__main__":

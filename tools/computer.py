@@ -1,13 +1,23 @@
 """Computer tools registration."""
 from typing import Any
 
-from hud.tools.computer import AnthropicComputerTool
+from hud.tools.computer import (
+    AnthropicComputerTool,
+    OpenAIComputerTool,
+    HudComputerTool,
+    GeminiComputerTool,
+    QwenComputerTool,
+)
 from tools.browser import router
 
 # Create tool instances at module level with None executor
 # The executor will be set during initialization
 _tools = [
     AnthropicComputerTool(executor=None),
+    OpenAIComputerTool(executor=None),
+    HudComputerTool(executor=None),
+    GeminiComputerTool(executor=None),
+    QwenComputerTool(executor=None),
 ]
 
 # Register tools on the browser router at module level

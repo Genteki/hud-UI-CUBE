@@ -1,13 +1,13 @@
 version: '1.3'
 images:
-  local: hud-ui-cube:0.1.15
-  full: hud-ui-cube:0.1.15@sha256:45cf386eab39d7e24562483d6ec9d4ff8649eb5a17107d0e5304e0af52ba13ff
+  local: hud-ui-cube:0.1.19
+  full: hud-ui-cube:0.1.19@sha256:d4107ede2d9ee24c2b7566c6c99f4855d5d6649f462603049c151a8c2bef917c
   pushed: null
 build:
-  generatedAt: 2026-01-12T03:38:28.619272+00:00Z
+  generatedAt: 2026-01-15T06:13:14.811639+00:00Z
   hudVersion: 0.5.4
   directory: hud-UI-CUBE
-  version: 0.1.15
+  version: 0.1.19
   sourceHash: 4f562d7a1e4a3cfa16118ad4257fe1b1e243107308edc8fb4b6dc15e42cfb710
   baseImage: hudevals/hud-browser-base
   platform: linux/amd64
@@ -15,14 +15,20 @@ build:
   - Dockerfile.hud
   - pyproject.toml
 environment:
-  initializeMs: 22430
-  toolCount: 3
+  initializeMs: 19380
+  toolCount: 7
   runtime:
     python: 3.12.3
     cuda: null
     cudnn: null
     pytorch: null
   internalToolCount: 0
+  variables:
+    _note: You can edit this section to add or modify environment variables. Provided
+      variables will be used when running the environment.
+    required:
+    - DISPLAY_HEIGHT
+    - DISPLAY_WIDTH
 tools:
 - name: navigate
   description: Navigate the browser to a URL.
@@ -93,6 +99,432 @@ tools:
         default: true
         description: Whether to take a screenshot after clicking
         type: boolean
+    required:
+    - action
+    type: object
+- name: openai_computer
+  description: Control computer with mouse, keyboard, and screenshots
+  inputSchema:
+    $defs:
+      Coordinate:
+        description: 'A coordinate point with x and y values.
+
+
+          Used for path-based actions like drag operations.'
+        properties:
+          x:
+            description: X coordinate
+            type: integer
+          y:
+            description: Y coordinate
+            type: integer
+        required:
+        - x
+        - y
+        type: object
+    properties:
+      type:
+        description: The action type to perform
+        enum:
+        - screenshot
+        - click
+        - double_click
+        - scroll
+        - type
+        - wait
+        - move
+        - keypress
+        - drag
+        - response
+        - custom
+        type: string
+      x:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: X coordinate for click/move/scroll actions
+      y:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Y coordinate for click/move/scroll actions
+      button:
+        anyOf:
+        - enum:
+          - left
+          - right
+          - middle
+          - back
+          - forward
+          type: string
+        - type: 'null'
+        default: null
+        description: Mouse button for click actions (left, right, middle, wheel)
+      text:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+        description: Text to type or response text
+      scroll_x:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Horizontal scroll amount
+      scroll_y:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Vertical scroll amount
+      ms:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Time to wait in milliseconds
+      keys:
+        anyOf:
+        - items:
+            type: string
+          type: array
+        - type: 'null'
+        default: null
+        description: Keys to press
+      path:
+        anyOf:
+        - items:
+            $ref: '#/$defs/Coordinate'
+          type: array
+        - type: 'null'
+        default: null
+        description: Path for drag actions as list of {x, y} dicts
+      action:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+        description: Custom action name
+    required:
+    - type
+    type: object
+- name: computer
+  description: Control computer with mouse, keyboard, and screenshots
+  inputSchema:
+    $defs:
+      Coordinate:
+        description: 'A coordinate point with x and y values.
+
+
+          Used for path-based actions like drag operations.'
+        properties:
+          x:
+            description: X coordinate
+            type: integer
+          y:
+            description: Y coordinate
+            type: integer
+        required:
+        - x
+        - y
+        type: object
+    properties:
+      action:
+        description: The action name (click, press, write, move, etc.)
+        enum:
+        - click
+        - press
+        - keydown
+        - keyup
+        - write
+        - scroll
+        - move
+        - wait
+        - drag
+        - response
+        - screenshot
+        - position
+        - hold_key
+        - mouse_down
+        - mouse_up
+        type: string
+      x:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: X coordinate for click/move/scroll actions
+      y:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Y coordinate for click/move/scroll actions
+      button:
+        anyOf:
+        - enum:
+          - left
+          - right
+          - middle
+          - back
+          - forward
+          type: string
+        - type: 'null'
+        default: null
+        description: Mouse button for click actions
+      pattern:
+        anyOf:
+        - items:
+            type: integer
+          type: array
+        - type: 'null'
+        default: null
+        description: Click pattern for multi-clicks (e.g., [100] for double-click)
+      text:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+        description: Text for write/response actions
+      keys:
+        anyOf:
+        - items:
+            type: string
+          type: array
+        - type: 'null'
+        default: null
+        description: Keys for press/keydown/keyup actions
+      enter_after:
+        anyOf:
+        - type: boolean
+        - type: 'null'
+        default: null
+        description: Whether to press Enter after typing
+      scroll_x:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Horizontal scroll amount (positive = right)
+      scroll_y:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Vertical scroll amount (positive = down)
+      offset_x:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: X offset for relative move
+      offset_y:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Y offset for relative move
+      path:
+        anyOf:
+        - items:
+            $ref: '#/$defs/Coordinate'
+          type: array
+        - type: 'null'
+        default: null
+        description: Path for drag actions as list of {x, y} coordinates
+      time:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Time in milliseconds for wait action
+      hold_keys:
+        anyOf:
+        - items:
+            type: string
+          type: array
+        - type: 'null'
+        default: null
+        description: Keys to hold during action
+      duration:
+        anyOf:
+        - type: number
+        - type: 'null'
+        default: null
+        description: Duration in seconds for hold_key action
+    required:
+    - action
+    type: object
+- name: gemini_computer
+  description: Control computer with mouse, keyboard, and screenshots
+  inputSchema:
+    properties:
+      action:
+        description: Gemini Computer Use action to perform
+        type: string
+      x:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: X coordinate (pixels in agent space)
+      y:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Y coordinate (pixels in agent space)
+      text:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+        description: Text to type
+      press_enter:
+        anyOf:
+        - type: boolean
+        - type: 'null'
+        default: null
+        description: Whether to press Enter after typing (type_text_at)
+      clear_before_typing:
+        anyOf:
+        - type: boolean
+        - type: 'null'
+        default: null
+        description: Whether to select-all before typing (type_text_at)
+      direction:
+        anyOf:
+        - enum:
+          - up
+          - down
+          - left
+          - right
+          type: string
+        - type: 'null'
+        default: null
+        description: Scroll direction for scroll_document/scroll_at
+      magnitude:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Scroll magnitude (pixels in agent space)
+      url:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+        description: Target URL for navigate
+      keys:
+        anyOf:
+        - items:
+            type: string
+          type: array
+        - type: string
+        - type: 'null'
+        default: null
+        description: Keys for key_combination
+      destination_x:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Destination X for drag_and_drop (agent space)
+      destination_y:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Destination Y for drag_and_drop (agent space)
+      take_screenshot_on_click:
+        default: true
+        description: Whether to include a screenshot for interactive actions
+        type: boolean
+    required:
+    - action
+    type: object
+- name: qwen_computer
+  description: 'Use a mouse and keyboard to interact with a computer, and take screenshots.
+
+    * This is an interface to a desktop GUI. You do not have access to a terminal
+    or
+
+    applications menu. You must click on desktop icons to start applications.
+
+    * Some applications may take time to start or process actions, so you may need
+    to
+
+    wait and take successive screenshots to see the results of your actions. E.g.
+    if you
+
+    click on Firefox and a window doesn''t open, try wait and taking another screenshot.
+
+    * The screen''s resolution is 700x448.
+
+    * Whenever you intend to move the cursor to click on an element like an icon,
+    you
+
+    should consult a screenshot to determine the coordinates of the element before
+
+    moving the cursor.
+
+    * If you tried clicking on a program or link but it failed to load, even after
+
+    waiting, try adjusting your cursor position so that the tip of the cursor visually
+
+    falls on the element that you want to click.
+
+    * Make sure to click any buttons, links, icons, etc with the cursor tip in the
+
+    center of the element. Don''t click boxes on their edges.'
+  inputSchema:
+    properties:
+      action:
+        description: The action to perform on the computer
+        type: string
+      keys:
+        anyOf:
+        - items:
+            type: string
+          type: array
+        - type: 'null'
+        default: null
+        description: Keys for key action
+      text:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+        description: Text to type
+      coordinate:
+        anyOf:
+        - items:
+            type: integer
+          type: array
+        - type: 'null'
+        default: null
+        description: The coordinate to interact with on the computer [x, y]
+      pixels:
+        anyOf:
+        - type: integer
+        - type: 'null'
+        default: null
+        description: Pixels to scroll
+      time:
+        anyOf:
+        - type: number
+        - type: 'null'
+        default: null
+        description: Time to wait in seconds
+      status:
+        anyOf:
+        - type: string
+        - type: 'null'
+        default: null
+        description: Status for terminate action
     required:
     - action
     type: object

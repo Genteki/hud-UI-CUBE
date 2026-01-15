@@ -6,7 +6,7 @@ import hud
 from hud import Environment
 from hud.agents import OpenAIChatAgent, create_agent
 from hud.agents.claude import AsyncAnthropic
-
+from prompts import SYSTEM_PROMPT
 
 DEV_URL = os.getenv("HUD_DEV_URL", "http://localhost:8765/mcp")
 
@@ -21,9 +21,9 @@ async def test_sample(task_id: str = "combo-box-tasks--1"):
     task = env("deterministic", task_id=task_id)
 
     async with hud.eval(task) as ctx:
-        # agent = OpenAIChatAgent.create(model="gpt-5")
-        agent = create_agent(model="claude-sonnet-4-5")
-        await agent.run(ctx, max_steps=10)
+        agent = OpenAIChatAgent.create(model="gpt-5", system_prompt=SYSTEM_PROMPT)
+        # agent = create_agent(model="claude-sonnet-4-5", system_prompt=SYSTEM_PROMPT)
+        await agent.run(ctx, max_steps=20)
         print(f"Reward: {ctx.reward}")
         print(f"Success: {ctx.reward == 1.0}")
 

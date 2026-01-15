@@ -18,8 +18,8 @@ RUN uv sync
 # Create directories for logs and data
 RUN mkdir -p /app/logs /app/data
 
-ENV DISPLAY_WIDTH=1920
-ENV DISPLAY_HEIGHT=1080
+ENV DISPLAY_WIDTH=1448
+ENV DISPLAY_HEIGHT=944
 
 # Add the uv .venv to PATH
 ENV PATH=/app/.venv/bin:$PATH
@@ -31,6 +31,7 @@ ENV PYTHONUNBUFFERED=1 \
 # Note: Set at runtime:
 # - BROWSER_PROVIDER: anchorbrowser, steel, browserbase, hyperbrowser
 # - Provider API keys: ANCHOR_API_KEY, STEEL_API_KEY, etc.
+ENV ANCHOR_API_KEY=sk-0ec40f6420b38724833606729d964708
 
 # Run: context server in background, then environment
 CMD ["sh", "-c", "\

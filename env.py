@@ -158,7 +158,7 @@ async def initialize_environment(ctx: Any) -> None:
 
 
 @env.tool("navigate")
-async def tool_navigate(url: str) -> ContentResult:
+async def tool_navigate(url: str) -> list:
     """Navigate the browser to a URL."""
     global persistent_ctx
     tool = persistent_ctx.playwright_tool if persistent_ctx else None
@@ -177,7 +177,7 @@ async def tool_navigate(url: str) -> ContentResult:
 
 
 @env.tool("wait")
-async def tool_wait(seconds: float) -> ContentResult:
+async def tool_wait(seconds: float) -> list:
     """Wait for a number of seconds."""
     try:
         await asyncio.sleep(seconds)

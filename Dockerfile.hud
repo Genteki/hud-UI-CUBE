@@ -12,7 +12,7 @@ COPY providers/ ./providers/
 COPY setup/ ./setup/
 COPY scenarios/ ./scenarios/
 COPY data/ ./data/
-
+COPY .env ./
 RUN uv sync
 
 # Create directories for logs and data

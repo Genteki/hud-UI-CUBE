@@ -14,10 +14,10 @@ from tools.browser import router
 # The executor will be set during initialization
 _tools = [
     AnthropicComputerTool(executor=None),
-    # OpenAIComputerTool(executor=None),
-    # HudComputerTool(executor=None),
-    # GeminiComputerTool(executor=None),
-    # QwenComputerTool(executor=None),
+    OpenAIComputerTool(executor=None),
+    HudComputerTool(executor=None),
+    GeminiComputerTool(executor=None),
+    QwenComputerTool(executor=None),
 ]
 
 # Register tools on the browser router at module level

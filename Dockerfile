@@ -10,7 +10,7 @@ RUN uv pip install --system --break-system-packages .
 
 # Stage 2: Setup UI_Cube Http Server
 RUN apt-get update -y \
-  && apt-get install -y --no-install-recommends git nodejs npm \
+  && apt-get install -y --no-install-recommends git nodejs npm xdotool scrot xvfb \
   && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/UiPath/uipath_enterprise_benchmark /app/uipath_enterprise_benchmark

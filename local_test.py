@@ -10,6 +10,9 @@ from prompts import SYSTEM_PROMPT
 from hud.agents.gemini_cua import GeminiCUAAgent
 from hud.agents import OpenAIAgent
 from hud.agents import OperatorAgent
+import logging
+
+logger = logging.getLogger(__name__)
 
 DEV_URL = os.getenv("HUD_DEV_URL", "http://localhost:8765/mcp")
 
@@ -21,7 +24,7 @@ env.connect_url(DEV_URL)
 # model = "z-ai/glm-4.5v"
 # model = "claude-sonnet-4-5"
 # model = "gemini-3-pro-preview"
-model = "claude-haiku-4-5"
+model = "claude-sonnet-4-5"
 max_steps = 30
 
 
@@ -30,7 +33,7 @@ async def test_sample(task_id: str = "combo-box-tasks--1"):
     print(f"\n=== Test: {task_id} ===")
 
     task = env("deterministic", task_id=task_id)
-
+    logger.info(f"SYSTEM_MESSAGE: {SYSTEM_PROMPT}")
     async with hud.eval(task) as ctx:
         agent = create_agent(
             model=model,

@@ -15,9 +15,9 @@ from tools.browser import router
 _tools = [
     AnthropicComputerTool(executor=None),
     OpenAIComputerTool(executor=None),
-    HudComputerTool(executor=None),
+    # HudComputerTool(executor=None),
     GeminiComputerTool(executor=None),
-    QwenComputerTool(executor=None),
+    # QwenComputerTool(executor=None),
 ]
 
 # Register tools on the browser router at module level
@@ -25,7 +25,7 @@ for tool in _tools:
     router.add_tool(tool)
 
 
-def register_computer_tools(env: Any, browser_executor: Any) -> None:
+def register_computer_tools(env: Any, executor: Any) -> None:
     """Set the executor for all computer tools."""
     for tool in _tools:
-        tool.executor = browser_executor
+        tool.executor = executor

@@ -52,6 +52,8 @@ async def initialize_environment() -> None:
     """Initialize the UI-CUBE environment."""
     global playwright_tool, browser_executor
 
+    from hud.tools.executors.pyautogui import PyAutoGUIExecutor
+    from hud.tools.executors.xdo import XDOExecutor
     from tools.browser import PlaywrightTool, BrowserExecutor
     from tools.computer import register_computer_tools
 
@@ -61,7 +63,27 @@ async def initialize_environment() -> None:
         logger.info("Playwright tool ready (browser launches lazily)")
 
 
-        browser_executor = BrowserExecutor(cast(Any, playwright_tool))
+        executor_type = os.environ.get("COMPUTER_EXECUTOR", "playwright").lower()
+        if executor_type == "xdo":
+            if not XDOExecutor.is_available():
+                logger.warning(
+                    "XDOExecutor unavailable; falling back to Playwright executor"
+                )
+                browser_executor = BrowserExecutor(cast(Any, playwright_tool))
+            else:
+                browser_executor = XDOExecutor()
+        elif executor_type == "pyautogui":
+            if not PyAutoGUIExecutor.is_available():
+                logger.warning(
+                    "PyAutoGUIExecutor unavailable; falling back to Playwright executor"
+                )
+                browser_executor = BrowserExecutor(cast(Any, playwright_tool))
+            else:
+                browser_executor = PyAutoGUIExecutor()
+        else:
+            browser_executor = BrowserExecutor(cast(Any, playwright_tool))
+
+        logger.info("Computer executor selected: %s", browser_executor.__class__.__name__)
         register_computer_tools(env, browser_executor)
         logger.info("Tools registered")
 

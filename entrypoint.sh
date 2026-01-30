@@ -16,6 +16,11 @@ if [ "${START_DISPLAY_SERVER:-1}" = "1" ]; then
     HEIGHT="${DISPLAY_HEIGHT:-1080}"
     Xvfb :1 -screen 0 ${WIDTH}x${HEIGHT}x24 > /dev/null 2>&1 &
     export DISPLAY=:1
+    # Wait briefly for the X socket to appear before starting VNC
+    for i in $(seq 1 20); do
+        [ -S /tmp/.X11-unix/X1 ] && break
+        sleep 0.2
+    done
     # Start a lightweight desktop session if available (prevents black screen)
     if command -v xfce4-session >/dev/null 2>&1; then
         xfce4-session > /dev/null 2>&1 &
@@ -26,7 +31,7 @@ if [ "${START_DISPLAY_SERVER:-1}" = "1" ]; then
     if command -v xsetroot >/dev/null 2>&1; then
         xsetroot -solid "#2b2b2b" >/dev/null 2>&1 || true
     fi
-    x11vnc -display :1 -nopw -listen 0.0.0.0 -forever > /dev/null 2>&1 &
+    x11vnc -display :1 -nopw -listen 0.0.0.0 -forever -shared > /dev/null 2>&1 &
     /usr/share/novnc/utils/novnc_proxy --vnc localhost:5900 --listen 6080 > /dev/null 2>&1 &
     sleep 1
 else

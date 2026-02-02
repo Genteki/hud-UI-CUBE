@@ -7,7 +7,8 @@ from hud.tools.computer import (
     HudComputerTool,
     GeminiComputerTool,
     QwenComputerTool,
-)
+    GLMComputerTool,
+)   
 from tools.browser import router
 
 # Create tool instances at module level with None executor
@@ -18,6 +19,7 @@ _tools = [
     HudComputerTool(executor=None),
     GeminiComputerTool(executor=None),
     QwenComputerTool(executor=None),
+    GLMComputerTool(executor=None),
 ]
 
 # Register tools on the browser router at module level

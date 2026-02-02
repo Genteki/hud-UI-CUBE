@@ -74,6 +74,14 @@ def register_deterministic_scenarios(env: Any) -> None:
             logger.info("Navigating to task URL: %s", web_url)
             await tool.navigate(web_url)  # type: ignore[misc]
 
+        # Take initial screenshot to capture the starting state
+        initial_screenshot = None
+        try:
+            initial_screenshot = await tool.screenshot()  # type: ignore[misc]
+            logger.info("Captured initial screenshot for task: %s", task_id)
+        except Exception as e:
+            logger.warning("Failed to capture initial screenshot: %s", e)
+
         # Build and yield prompt
         parts = [ques]
         if ux_hint:
@@ -82,7 +90,12 @@ def register_deterministic_scenarios(env: Any) -> None:
             parts.append(f"\nURL: {web_url}")
         prompt = "\n".join([ques])
 
-        _ = yield prompt
+        # Yield prompt with initial screenshot as setup output
+        # The screenshot will be available to the agent via ctx.setup_output
+        if initial_screenshot:
+            _ = yield {"prompt": prompt, "screenshot": initial_screenshot}
+        else:
+            _ = yield prompt
 
         # ===== VERIFICATION PHASE =====
         # Re-fetch tool in case state changed

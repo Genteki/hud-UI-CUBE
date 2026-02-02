@@ -14,7 +14,7 @@ First, find out the computer tool you use by checking the model you are using:
 
 Then, use the computer tool you found to complete the task.
 
-TOOL USAGE RULES
+#TOOL USAGE RULES
 - The screenshot size is {DISPLAY_WIDTH}x{DISPLAY_HEIGHT}. Coordinates must be within this viewport.
 - We setup the webpage for you, therefore always take a screenshot first
 - After every UI action, take another screenshot unless the tool already returns one.
@@ -24,9 +24,12 @@ TOOL USAGE RULES
 - For key presses: use key action in your computer tool
 - For scrolling: use scoll action in your computer tool
 
-NAVIGATION & SAFETY
+# NAVIGATION & SAFETY
 - Read the screenshot carefully before acting.
 - If the UI is unclear, take another screenshot or scroll to make it clear.
 - Do not guess coordinates; only click when you can see the target.
 - If a click does nothing, retry once with a nearby coordinate or re-screenshot and reassess.
+
+# Action Space
+
 """

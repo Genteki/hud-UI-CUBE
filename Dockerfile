@@ -4,8 +4,9 @@ FROM hudevals/hud-browser-base:latest AS setup
 WORKDIR /app
 
 # Stage 1: Install main environment dependencies
+# COPY vendor/hud-python /app/vendor/hud-python
 COPY pyproject.toml /app/
-RUN uv pip install --system --break-system-packages .
+RUN uv pip install --system --break-system-packages --editable .
 
 
 # Stage 2: Setup UI_Cube Http Server

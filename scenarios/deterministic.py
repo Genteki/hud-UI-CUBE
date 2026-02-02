@@ -23,7 +23,7 @@ except Exception as exc:
 
 def register_deterministic_scenarios(env: Any) -> None:
     """Register a single parameterized scenario for all deterministic tasks."""
-    
+
     def _localize_url(url: str) -> str:
         base = os.getenv("UI_CUBE_BASE_URL", "http://localhost:3000")
         if not url or not base:
@@ -45,7 +45,7 @@ def register_deterministic_scenarios(env: Any) -> None:
             task_id: The task ID (e.g., 'combo-box-tasks--1')
         """
         import env as env_module
-        
+
         # Look up the task
         task = _TASKS_BY_ID.get(task_id)
         if not task:
@@ -93,14 +93,15 @@ def register_deterministic_scenarios(env: Any) -> None:
         # Yield prompt with initial screenshot as setup output
         # The screenshot will be available to the agent via ctx.setup_output
         if initial_screenshot:
-            _ = yield {"prompt": prompt, "screenshot": initial_screenshot}
+            # _ = yield {"prompt": prompt, "screenshot": initial_screenshot}
+            yield prompt
         else:
             _ = yield prompt
 
         # ===== VERIFICATION PHASE =====
         # Re-fetch tool in case state changed
         tool = env_module.playwright_tool
-        
+
         try:
             if tool and tool.page:
                 html = await tool.page.content()  # type: ignore[union-attr]

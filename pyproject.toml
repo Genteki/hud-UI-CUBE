@@ -3,7 +3,7 @@ name = "hud-ui-cube-local"
 version = "0.1.0"
 requires-python = ">=3.11,<3.13"
 dependencies = [
-  "hud-python @ git+https://github.com/hud-evals/hud-python.git@fix--operator",
+  "hud-python @ git+https://github.com/hud-evals/hud-python.git",
   "pyautogui",
   "playwright",
   "httpx",
